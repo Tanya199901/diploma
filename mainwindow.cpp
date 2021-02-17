@@ -31,18 +31,31 @@ void MainWindow::showPreview(QPixmap *originalPixmap)
 
 void MainWindow::calculateHistogram(QPixmap *pixmap)
 {
-//void QColor::getHsv(int *h, int *s, int *v, int *a = nullptr) const
-    //int QColor::value() const
+    qDebug() << "Start of calculation";
 
-    int width = pixmap->width();
-    int height = pixmap->height();
+    QImage image = pixmap->toImage();
+
+    int width = image.width();
+    int height = image.height();
 
     int hist[255];
     for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++){
-//                hist++
-             qDebug() << i << j;
-
+        for (int j = 0; j < width; j++) {
+            QColor pixel = image.pixelColor(j, i);
+            int brightness = pixel.value();
+            int count = hist[brightness];
+            int countWithThisPixel = count + 1;
+            hist[brightness] = countWithThisPixel;
         }
+    }
+
+    printArray(hist, 256);
+}
+
+void MainWindow::printArray(int array[], int length)
+{
+    for(int i=0; i < length; i++)
+    {
+        qDebug() << i << " : " << array[i];
     }
 }

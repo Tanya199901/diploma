@@ -20,11 +20,11 @@ public:
 
 private slots:
     void on_pickImageButton_clicked();
-    void showPreview(QPixmap *originalPixmap);
-    void calculateHistogram(QPixmap *originalPixmap);
-
 
 private:
     Ui::MainWindow *ui;
+    void showPreview(QPixmap *originalPixmap);
+    void calculateHistogram(QPixmap *originalPixmap);
+    void printArray(int array[], int length);
 };
 #endif // MAINWINDOW_H
