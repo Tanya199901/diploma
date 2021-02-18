@@ -38,7 +38,8 @@ void MainWindow::calculateHistogram(QPixmap *pixmap)
     int width = image.width();
     int height = image.height();
 
-    int hist[255];
+    long hist[256];
+    prepareArray(hist, 256);
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             QColor pixel = image.pixelColor(j, i);
@@ -51,8 +52,14 @@ void MainWindow::calculateHistogram(QPixmap *pixmap)
 
     printArray(hist, 256);
 }
-
-void MainWindow::printArray(int array[], int length)
+void MainWindow::prepareArray(long array[], int length)
+{
+    for(int i=0; i < length; i++)
+    {
+        array[i] = 0;
+    }
+}
+void MainWindow::printArray(long array[], int length)
 {
     for(int i=0; i < length; i++)
     {

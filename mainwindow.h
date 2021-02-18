@@ -25,6 +25,8 @@ private:
     Ui::MainWindow *ui;
     void showPreview(QPixmap *originalPixmap);
     void calculateHistogram(QPixmap *originalPixmap);
-    void printArray(int array[], int length);
+    void printArray(long array[], int length);
+    void prepareArray(long array[], int length);
+
 };
 #endif // MAINWINDOW_H
