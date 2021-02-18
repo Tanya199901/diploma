@@ -26,6 +26,7 @@ void MainWindow::showPreview(QImage *image)
 {
     QSize picSize = ui->image->size();
     QPixmap originalPixmap = QPixmap::fromImage(*image);
+    qDebug() << image->format();
     QPixmap scaledPixmap = originalPixmap.scaled(picSize, Qt::KeepAspectRatio);
     ui->image->setPixmap(scaledPixmap);
 }
@@ -42,10 +43,8 @@ void MainWindow::calculateHistogram(QImage *image)
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             QColor pixel = image->pixelColor(j, i);
-            int brightness = pixel.value();
-            int count = hist[brightness];
-            int countWithThisPixel = count + 1;
-            hist[brightness] = countWithThisPixel;
+            int brightness = pixel.lightness();
+            hist[brightness]++;
         }
     }
 
