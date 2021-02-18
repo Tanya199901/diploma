@@ -17,32 +17,31 @@ void MainWindow::on_pickImageButton_clicked()
 {
     QFileDialog dialog(this);
     QString fileName = dialog.getOpenFileName(this, "Select an image", "", "Image (*.jpeg *.png *.jpg *.bmp)");
-    QPixmap pixmap(fileName);
-    showPreview(&pixmap);
-    calculateHistogram(&pixmap);
+    QImage image(fileName);
+    showPreview(&image);
+    calculateHistogram(&image);
 }
 
-void MainWindow::showPreview(QPixmap *originalPixmap)
+void MainWindow::showPreview(QImage *image)
 {
     QSize picSize = ui->image->size();
-    QPixmap scaledPixmap = originalPixmap->scaled(picSize, Qt::KeepAspectRatio);
+    QPixmap originalPixmap = QPixmap::fromImage(*image);
+    QPixmap scaledPixmap = originalPixmap.scaled(picSize, Qt::KeepAspectRatio);
     ui->image->setPixmap(scaledPixmap);
 }
 
-void MainWindow::calculateHistogram(QPixmap *pixmap)
+void MainWindow::calculateHistogram(QImage *image)
 {
     qDebug() << "Start of calculation";
 
-    QImage image = pixmap->toImage();
-
-    int width = image.width();
-    int height = image.height();
+    int width = image->width();
+    int height = image->height();
 
     long hist[256];
     prepareArray(hist, 256);
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            QColor pixel = image.pixelColor(j, i);
+            QColor pixel = image->pixelColor(j, i);
             int brightness = pixel.value();
             int count = hist[brightness];
             int countWithThisPixel = count + 1;

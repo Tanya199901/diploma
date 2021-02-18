@@ -23,8 +23,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    void showPreview(QPixmap *originalPixmap);
-    void calculateHistogram(QPixmap *originalPixmap);
+    void showPreview(QImage *image);
+    void calculateHistogram(QImage *image);
     void printArray(long array[], int length);
     void prepareArray(long array[], int length);
 
