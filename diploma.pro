@@ -16,11 +16,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    clickablelabel.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    service_functions.cpp
 
 HEADERS += \
-    mainwindow.h
+    clickablelabel.h \
+    mainwindow.h \
+    service_functions.h \
+    tiff.h \
+    tiffconf.h \
+    tiffio2.h \
+    tiffvers.h
 
 FORMS += \
     mainwindow.ui
@@ -32,3 +40,6 @@ TRANSLATIONS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    libTIFF64.dll
