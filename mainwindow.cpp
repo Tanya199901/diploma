@@ -8,6 +8,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     p_tiff = new myTIFF("MainWindow");
+    this->setMouseTracking(true);
+    this->ui->image->installEventFilter(this);
+
 }
 
 MainWindow::~MainWindow()
@@ -22,6 +25,7 @@ void MainWindow::on_pickImageButton_clicked()
     QImage image(fileName);
     showPreview(&image);
     calculateHistogram(&image);
+    sourceImage = &image;
 }
 
 void MainWindow::showPreview(QImage *image)
@@ -37,21 +41,55 @@ void MainWindow::calculateHistogram(QImage *image)
 {
     qDebug() << "Start of calculation";
 
-    int width = image->width();
-    int height = image->height();
+        long hist[256];
+        prepareArray(hist, 256);
+        int x1 = ui->image->pressLocation.x();
+        int x2 = ui->image->releaseLocation.x();
+        int y1 = ui->image->pressLocation.y();
+        int y2 = ui->image->releaseLocation.y();
+        int maxBrightness = 0;
+        int minBrightness = 256;
 
-    long hist[256];
-    prepareArray(hist, 256);
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            QColor pixel = image->pixelColor(j, i);
-            int brightness = pixel.lightness();
-            hist[brightness]++;
+        for (int i = x1; i < x2; i++) {
+            for (int j = y1; j < y2; j++) {
+                QColor pixel = image->pixelColor(j, i);
+                int brightness = pixel.lightness();
+                qDebug() << " ok: " << brightness;
+
+                    if (brightness > maxBrightness) {
+                        maxBrightness = brightness;
+                        qDebug() << " ok max: " << maxBrightness;
+
+                    }
+                    if (brightness < minBrightness) {
+                           minBrightness = brightness;
+                           qDebug() << " ok min: " << minBrightness;
+
+                    }
+                hist[brightness]++;
+            }
         }
-    }
+         qDebug() << " min: " << minBrightness;
+         qDebug() << " max: " << maxBrightness;
 
     printArray(hist, 256);
 }
+
+bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
+
+    if (event->type() == QEvent::MouseButtonRelease) {
+        QMouseEvent* me = static_cast<QMouseEvent*>(event);
+        if (me) {
+            qDebug() << tr("mouseEvent emitted: [x, y] = [%1, %2]") .arg(me->x()).arg(me->y());
+            // TUT
+            calculateHistogram(sourceImage);
+        }
+        else
+            qDebug() << tr("Стремное событие: %1");
+    }
+    return QMainWindow::eventFilter(obj, event);
+}
+
 void MainWindow::prepareArray(long array[], int length)
 {
     for(int i=0; i < length; i++)

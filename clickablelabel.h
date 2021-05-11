@@ -16,7 +16,7 @@ signals:
 
 
     // QWidget interface
-protected:
+    public:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);

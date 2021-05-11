@@ -28,10 +28,12 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QImage *sourceImage;
     void showPreview(QImage *image);
     void calculateHistogram(QImage *image);
     void printArray(long array[], int length);
     void prepareArray(long array[], int length);
+    bool eventFilter(QObject* obj, QEvent* event);
 
 };
 #endif // MAINWINDOW_H
