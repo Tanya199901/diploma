@@ -24,8 +24,15 @@ void MainWindow::on_pickImageButton_clicked()
     QString fileName = dialog.getOpenFileName(this, "Select an image", "", "Image (*.jpeg *.png *.jpg *.bmp *.tiff *.tif)");
     QImage image(fileName);
     showPreview(&image);
-    calculateHistogram(&image);
-    sourceImage = &image;
+    //calculateHistogram(&image);
+    sourceImage = image;
+    calculateHistogram(
+                &sourceImage,
+                0,
+                0,
+                sourceImage.width(),
+                sourceImage.height()
+    );
 }
 
 void MainWindow::showPreview(QImage *image)
@@ -37,42 +44,23 @@ void MainWindow::showPreview(QImage *image)
     ui->image->setPixmap(scaledPixmap);
 }
 
-void MainWindow::calculateHistogram(QImage *image)
+void MainWindow::calculateHistogram(QImage *image, int x1, int y1, int x2, int y2)
 {
-    qDebug() << "Start of calculation";
+    qDebug() << "Image ref: " << image << tr("; w: %2; h: %3").arg(image->width()).arg(image->height());
+    qDebug() << tr("Start of calculation: x1: %1; y1: %2; x2: %3; y2: %4")
+                .arg(x1).arg(y1).arg(x2).arg(y2);
 
-        long hist[256];
-        prepareArray(hist, 256);
-        int x1 = ui->image->pressLocation.x();
-        int x2 = ui->image->releaseLocation.x();
-        int y1 = ui->image->pressLocation.y();
-        int y2 = ui->image->releaseLocation.y();
-        int maxBrightness = 0;
-        int minBrightness = 256;
-
-        for (int i = x1; i < x2; i++) {
-            for (int j = y1; j < y2; j++) {
-                QColor pixel = image->pixelColor(j, i);
-                int brightness = pixel.lightness();
-                qDebug() << " ok: " << brightness;
-
-                    if (brightness > maxBrightness) {
-                        maxBrightness = brightness;
-                        qDebug() << " ok max: " << maxBrightness;
-
-                    }
-                    if (brightness < minBrightness) {
-                           minBrightness = brightness;
-                           qDebug() << " ok min: " << minBrightness;
-
-                    }
-                hist[brightness]++;
-            }
+    long hist[256];
+    prepareArray(hist, 256);
+    for (int i = y1; i < y2; i++) {
+        for (int j = x1; j < x2; j++) {
+            QColor pixel = image->pixelColor(j, i);
+            int brightness = pixel.lightness();
+            hist[brightness]++;
         }
-         qDebug() << " min: " << minBrightness;
-         qDebug() << " max: " << maxBrightness;
+    }
 
-    printArray(hist, 256);
+    //printArray(hist, 256);
 }
 
 bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
@@ -82,7 +70,11 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
         if (me) {
             qDebug() << tr("mouseEvent emitted: [x, y] = [%1, %2]") .arg(me->x()).arg(me->y());
             // TUT
-            calculateHistogram(sourceImage);
+            int x1 = ui->image->pressLocation.x();
+            int y1 = ui->image->pressLocation.y();
+            int x2 = ui->image->releaseLocation.x();
+            int y2 = ui->image->releaseLocation.y();
+            calculateHistogram(&sourceImage, x1, y1, x2, y2);
         }
         else
             qDebug() << tr("Стремное событие: %1");
