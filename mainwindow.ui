@@ -36,6 +36,9 @@
       <height>391</height>
      </rect>
     </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
     <property name="text">
      <string>Image</string>
     </property>
@@ -43,7 +46,7 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>560</x>
+      <x>590</x>
       <y>260</y>
       <width>75</width>
       <height>23</height>

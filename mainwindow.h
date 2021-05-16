@@ -34,6 +34,7 @@ private:
     void printArray(long array[], int length);
     void prepareArray(long array[], int length);
     bool eventFilter(QObject* obj, QEvent* event);
+    void convertCoords(QPoint* press, QPoint* release);
 
 };
 #endif // MAINWINDOW_H

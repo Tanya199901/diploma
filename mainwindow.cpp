@@ -47,6 +47,7 @@ void MainWindow::showPreview(QImage *image)
 void MainWindow::calculateHistogram(QImage *image, int x1, int y1, int x2, int y2)
 {
     qDebug() << "Image ref: " << image << tr("; w: %2; h: %3").arg(image->width()).arg(image->height());
+    qDebug() << tr("Label w: %1; h: %2").arg(ui->image->width()).arg(ui->image->height());
     qDebug() << tr("Start of calculation: x1: %1; y1: %2; x2: %3; y2: %4")
                 .arg(x1).arg(y1).arg(x2).arg(y2);
 
@@ -60,7 +61,7 @@ void MainWindow::calculateHistogram(QImage *image, int x1, int y1, int x2, int y
         }
     }
 
-    //printArray(hist, 256);
+    printArray(hist, 256);
 }
 
 bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
@@ -69,12 +70,10 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
         QMouseEvent* me = static_cast<QMouseEvent*>(event);
         if (me) {
             qDebug() << tr("mouseEvent emitted: [x, y] = [%1, %2]") .arg(me->x()).arg(me->y());
-            // TUT
-            int x1 = ui->image->pressLocation.x();
-            int y1 = ui->image->pressLocation.y();
-            int x2 = ui->image->releaseLocation.x();
-            int y2 = ui->image->releaseLocation.y();
-            calculateHistogram(&sourceImage, x1, y1, x2, y2);
+            QPoint press(ui->image->pressLocation.x(), ui->image->pressLocation.y());
+            QPoint release(ui->image->releaseLocation.x(), ui->image->releaseLocation.y());
+            convertCoords(&press, &release);
+            calculateHistogram(&sourceImage, press.x(), press.y(), release.x(), release.y());
         }
         else
             qDebug() << tr("Стремное событие: %1");
@@ -148,4 +147,26 @@ void MainWindow::on_pushButton_clicked()
         ui->image->setPixmap(pixmap);
 
         delete [] imageData;
+}
+
+void MainWindow::convertCoords(QPoint* press, QPoint* release)
+{
+    qDebug() << "convertCoords";
+    float factor = 1;
+    if (sourceImage.width() < sourceImage.height()) {
+        // height
+        qDebug() << "by height";
+        factor = ((float) sourceImage.width()) / ui->image->width();
+    } else {
+        // width
+        qDebug() << "by width";
+        factor = ((float) sourceImage.height()) / ui->image->height();
+    }
+    qDebug() << "factor: " << factor;
+    qDebug() << "pre: press: " << *press << "; release: " << *release;
+    press->setX(press->x() * factor);
+    press->setY(press->y() * factor);
+    release->setX(release->x() * factor);
+    release->setY(release->y() * factor);
+    qDebug() << "post: press: " << *press << "; release: " << *release;
 }
