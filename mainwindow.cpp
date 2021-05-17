@@ -73,7 +73,37 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
             QPoint press(ui->image->pressLocation.x(), ui->image->pressLocation.y());
             QPoint release(ui->image->releaseLocation.x(), ui->image->releaseLocation.y());
             convertCoords(&press, &release);
-            calculateHistogram(&sourceImage, press.x(), press.y(), release.x(), release.y());
+            //calculateHistogram(&sourceImage, press.x(), press.y(), release.x(), release.y());
+            handledImage = QImage(sourceImage);
+            int min = INT32_MAX;
+            int max = -1;
+            for (int i = press.y(); i < release.y(); i++) {
+                for (int j = press.x(); j < release.x(); j++) {
+                    QColor pixel = handledImage.pixelColor(j, i);
+                    int value = pixel.value();
+                    if (value > max) {
+                        max = value;
+                    } else if (value < min) {
+                        min = value;
+                    }
+                    //int brightness = pixel.lightness();
+                }
+            }
+            // qDebug() << "~~~ min: " << min << "; max: " << max;
+            float coefA = 255.0F / (max - min);
+            float coefB = -1.0F * ((255.0F * min) / (max - min));
+            // qDebug() << "~~~ A: " << coefA << "; B: " << coefB;
+            for (int i = press.y(); i < release.y(); i++) {
+                for (int j = press.x(); j < release.x(); j++) {
+                    QColor pixel = handledImage.pixelColor(j, i);
+                    int newValue = pixel.value() * coefA + coefB;
+                    // qDebug() << "~~~ oldV" << pixel.value() << "; newV: " << newValue;
+                    pixel.setHsv(pixel.hsvHue(), pixel.hsvSaturation(), newValue);
+                    handledImage.setPixelColor(j, i, pixel);
+                    //int brightness = pixel.lightness();
+                }
+            }
+            showPreview(&handledImage);
         }
         else
             qDebug() << tr("Стремное событие: %1");

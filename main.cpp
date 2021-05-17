@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 
     m_logFile.reset(new QFile("logFile.txt"));
     m_logFile.data()->open(QFile::Append | QFile::Text);
-    qInstallMessageHandler(messageHanlder);
+    //qInstallMessageHandler(messageHanlder);
 
     MainWindow w;
     w.show();
