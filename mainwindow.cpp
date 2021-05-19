@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setMouseTracking(true);
     this->ui->image->installEventFilter(this);
     handledImage = NULL;
-    qInfo() << "TESSST";
+    qInfo() << "=== " << QDateTime::currentDateTime().toString(Qt::DateFormat::LocaleDate) << " ===";
 }
 
 MainWindow::~MainWindow()
@@ -48,9 +48,9 @@ void MainWindow::showPreview(QImage *image)
 
 void MainWindow::calculateHistogram(QImage *image, int x1, int y1, int x2, int y2)
 {
-    qDebug() << "Image ref: " << image << tr("; w: %2; h: %3").arg(image->width()).arg(image->height());
+    qInfo() << tr("Image [w: %1; h: %2]").arg(image->width()).arg(image->height());
     qDebug() << tr("Label w: %1; h: %2").arg(ui->image->width()).arg(ui->image->height());
-    qDebug() << tr("Start of calculation: x1: %1; y1: %2; x2: %3; y2: %4")
+    qInfo() << tr("Calculating histogram for: x1: %1; y1: %2; x2: %3; y2: %4")
                 .arg(x1).arg(y1).arg(x2).arg(y2);
 
     long hist[256];
@@ -107,6 +107,7 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
                 }
             }
             showPreview(handledImage);
+            calculateHistogram(handledImage, press.x(), press.y(), release.x(), release.y());
         }
         else
             qDebug() << tr("Стремное событие: %1");
@@ -125,7 +126,7 @@ void MainWindow::printArray(long array[], int length)
 {
     for(int i=0; i < length; i++)
     {
-        qDebug() << i << " : " << array[i];
+        qInfo() << i << " : " << array[i];
     }
 }
 
@@ -137,6 +138,7 @@ void MainWindow::on_pickFileButton_clicked()
     QByteArray ba;
     QString fp = QFileDialog::getOpenFileName(this, "Select an image", "", "Image (*.tiff *.tif)");
     if (fp.isEmpty()) return;
+    qInfo() << "Selected image: " << fp;
     const char *c_str;
 
     qDebug() << "MainWindow::1";
@@ -184,6 +186,13 @@ void MainWindow::on_pickFileButton_clicked()
     image.convertTo(QImage::Format_ARGB32_Premultiplied);
     qDebug() << "Image format" << image.format();
     sourceImage = image;
+    calculateHistogram(
+                &sourceImage,
+                0,
+                0,
+                sourceImage.width(),
+                sourceImage.height()
+                );
 
     delete [] imageData;
 }
