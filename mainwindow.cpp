@@ -134,7 +134,8 @@ void MainWindow::on_pickFileButton_clicked()
     uint imageHeight;
     ushort * imageData, *tmp;
     QByteArray ba;
-    QString fp = QFileDialog::getOpenFileName();
+    QString fp = QFileDialog::getOpenFileName(this, "Select an image", "", "Image (*.tiff *.tif)");
+    if (fp.isEmpty()) return;
     const char *c_str;
 
     qDebug() << "MainWindow::1";
@@ -212,5 +213,19 @@ void MainWindow::on_clear_clicked()
 {
     handledImage = NULL;
     showPreview(&sourceImage);
+}
+
+
+void MainWindow::on_saveButton_clicked()
+{
+    QString saveFileName = QFileDialog::getSaveFileName(this, "Save", "", "JPEG (*.jpeg);; TIFF(*.tif)");
+    if (saveFileName.isEmpty()) return;
+    QImage * imageToSave;
+    if (handledImage == NULL) {
+        imageToSave = &sourceImage;
+    } else {
+        imageToSave = handledImage;
+    }
+    imageToSave->save(saveFileName);
 }
 

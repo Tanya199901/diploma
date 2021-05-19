@@ -26,6 +26,8 @@ private slots:
 
     void on_pickFileButton_clicked();
 
+    void on_saveButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QImage sourceImage;
