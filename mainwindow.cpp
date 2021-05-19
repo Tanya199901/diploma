@@ -192,11 +192,11 @@ void MainWindow::convertCoords(QPoint* press, QPoint* release)
     if (sourceImage.width() < sourceImage.height()) {
         // height
         qDebug() << "by height";
-        factor = ((float) sourceImage.width()) / ui->image->width();
+        factor = ((float) sourceImage.height()) / ui->image->height();
     } else {
         // width
         qDebug() << "by width";
-        factor = ((float) sourceImage.height()) / ui->image->height();
+        factor = ((float) sourceImage.width()) / ui->image->width();
     }
     qDebug() << "factor: " << factor;
     qDebug() << "pre: press: " << *press << "; release: " << *release;
