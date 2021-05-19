@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setMouseTracking(true);
     this->ui->image->installEventFilter(this);
     handledImage = NULL;
+    qInfo() << "TESSST";
 }
 
 MainWindow::~MainWindow()

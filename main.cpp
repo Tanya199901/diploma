@@ -14,17 +14,29 @@ int main(int argc, char *argv[])
 
     m_logFile.reset(new QFile("logFile.txt"));
     m_logFile.data()->open(QFile::Append | QFile::Text);
-    //qInstallMessageHandler(messageHanlder);
+    qInstallMessageHandler(messageHanlder);
 
     MainWindow w;
     w.show();
     return a.exec();
 }
 
+QTextStream& qStdOut()
+{
+    static QTextStream ts( stdout );
+    return ts;
+}
+
+QTextStream& logFileOut()
+{
+    static QTextStream ts( m_logFile.data() );
+    return ts;
+}
+
 void messageHanlder(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     Q_UNUSED(context);
-    QTextStream out(m_logFile.data());
-    out << msg << endl;
-    out.flush();
+    if (type == QtMsgType::QtInfoMsg) logFileOut() << msg << endl;
+    logFileOut().flush();
+    qStdOut() << msg << endl;
 }
