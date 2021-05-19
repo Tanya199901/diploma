@@ -14,19 +14,6 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="pickImageButton">
-    <property name="geometry">
-     <rect>
-      <x>1200</x>
-      <y>10</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Pick a file</string>
-    </property>
-   </widget>
    <widget class="ClickableLabel" name="image">
     <property name="geometry">
      <rect>
@@ -43,17 +30,30 @@
      <string>Image</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="pickFileButton">
     <property name="geometry">
      <rect>
       <x>1200</x>
-      <y>40</y>
-      <width>75</width>
+      <y>10</y>
+      <width>71</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Pick a file</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Clear">
+    <property name="geometry">
+     <rect>
+      <x>1200</x>
+      <y>40</y>
+      <width>71</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Clear</string>
     </property>
    </widget>
   </widget>

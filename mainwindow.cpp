@@ -206,3 +206,9 @@ void MainWindow::convertCoords(QPoint* press, QPoint* release)
     release->setY(release->y() * factor);
     qDebug() << "post: press: " << *press << "; release: " << *release;
 }
+
+void MainWindow::on_Clear_clicked()
+{
+
+}
+

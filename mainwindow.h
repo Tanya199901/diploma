@@ -26,6 +26,8 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_Clear_clicked();
+
 private:
     Ui::MainWindow *ui;
     QImage sourceImage;
