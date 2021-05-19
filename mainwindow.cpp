@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QColorSpace>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -89,7 +90,7 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
                     //int brightness = pixel.lightness();
                 }
             }
-            // qDebug() << "~~~ min: " << min << "; max: " << max;
+            qDebug() << "~~~ min: " << min << "; max: " << max;
             float coefA = 255.0F / (max - min);
             float coefB = -1.0F * ((255.0F * min) / (max - min));
             // qDebug() << "~~~ A: " << coefA << "; B: " << coefB;
@@ -176,6 +177,10 @@ void MainWindow::on_pushButton_clicked()
 //    pixmap.convertFromImage(image);
 //    ui->image->setPixmap(pixmap);
     showPreview(&image);
+//    image.convertToColorSpace(QColorSpace::SRgb);
+    image.convertTo(QImage::Format_ARGB32_Premultiplied);
+    qDebug() << "Image format" << image.format();
+    sourceImage = image;
 
     delete [] imageData;
 }
