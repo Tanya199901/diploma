@@ -172,9 +172,10 @@ void MainWindow::on_pushButton_clicked()
         }
     }
     qDebug() << "MainWindow::8";
-    QPixmap pixmap;
-    pixmap.convertFromImage(image);
-    ui->image->setPixmap(pixmap);
+//    QPixmap pixmap;
+//    pixmap.convertFromImage(image);
+//    ui->image->setPixmap(pixmap);
+    showPreview(&image);
 
     delete [] imageData;
 }

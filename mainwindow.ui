@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1280</width>
+    <height>1024</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="pickImageButton">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>170</y>
+      <x>1200</x>
+      <y>10</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -30,10 +30,10 @@
    <widget class="ClickableLabel" name="image">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>50</y>
-      <width>511</width>
-      <height>391</height>
+      <x>10</x>
+      <y>10</y>
+      <width>1181</width>
+      <height>971</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -46,8 +46,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>260</y>
+      <x>1200</x>
+      <y>40</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -62,7 +62,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1280</width>
      <height>21</height>
     </rect>
    </property>
