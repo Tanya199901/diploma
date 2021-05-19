@@ -136,47 +136,47 @@ void MainWindow::on_pushButton_clicked()
     const char *c_str;
 
     qDebug() << "MainWindow::1";
-        ba = fp.toLocal8Bit();
-        qDebug() << "MainWindow::2";
-        c_str = ba.data();
-        qDebug() << "MainWindow::3";
-        tmp = p_tiff->openFile(c_str, &imageWidth, &imageHeight);
+    ba = fp.toLocal8Bit();
+    qDebug() << "MainWindow::2";
+    c_str = ba.data();
+    qDebug() << "MainWindow::3";
+    tmp = p_tiff->openFile(c_str, &imageWidth, &imageHeight);
     qDebug() << "MainWindow::4 " << imageWidth << imageHeight;
 
-        imageData = new ushort[imageWidth * imageHeight];
-        memcpy(imageData, tmp, imageWidth * imageHeight * 2);
+    imageData = new ushort[imageWidth * imageHeight];
+    memcpy(imageData, tmp, imageWidth * imageHeight * 2);
     qDebug() << "MainWindow::5";
-        QImage image(imageWidth, imageHeight, QImage::Format_Indexed8);
+    QImage image(imageWidth, imageHeight, QImage::Format_Indexed8);
     qDebug() << "MainWindow::6";
-        quint8 * line = image.scanLine(0);
-        int stride = image.bytesPerLine();
+    quint8 * line = image.scanLine(0);
+    int stride = image.bytesPerLine();
     qDebug() << "MainWindow::7";
-        qint32 pixel = 0;
-        for ( int y = 0; y < imageHeight; ++y, line += stride)
+    qint32 pixel = 0;
+    for ( int y = 0; y < imageHeight; ++y, line += stride)
+    {
+        quint8 * pix = line;
+        for ( int x = 0; x < imageWidth; ++x, pix += 1)
         {
-            quint8 * pix = line;
-            for ( int x = 0; x < imageWidth; ++x, pix += 1)
+            pixel  = imageData[(y*imageWidth)+x]/255;
+
+            if (pixel > 255)
             {
-                pixel  = imageData[(y*imageWidth)+x]/255;
-
-                if (pixel > 255)
-                {
-                    pixel = 255;
-                }
-                if (pixel < 0)
-                {
-                    pixel = 0;
-                }
-
-                pix[0] = pixel;
+                pixel = 255;
             }
-        }
-    qDebug() << "MainWindow::8";
-        QPixmap pixmap;
-        pixmap.convertFromImage(image);
-        ui->image->setPixmap(pixmap);
+            if (pixel < 0)
+            {
+                pixel = 0;
+            }
 
-        delete [] imageData;
+            pix[0] = pixel;
+        }
+    }
+    qDebug() << "MainWindow::8";
+    QPixmap pixmap;
+    pixmap.convertFromImage(image);
+    ui->image->setPixmap(pixmap);
+
+    delete [] imageData;
 }
 
 void MainWindow::convertCoords(QPoint* press, QPoint* release)
