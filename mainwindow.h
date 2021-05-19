@@ -22,16 +22,14 @@ public:
     myTIFF *p_tiff;
 
 private slots:
-    void on_pickImageButton_clicked();
+    void on_clear_clicked();
 
-    void on_pushButton_clicked();
-
-    void on_Clear_clicked();
+    void on_pickFileButton_clicked();
 
 private:
     Ui::MainWindow *ui;
     QImage sourceImage;
-    QImage handledImage;
+    QImage * handledImage;
     void showPreview(QImage *image);
     void calculateHistogram(QImage *image, int x1, int y1, int x2, int y2);
     void printArray(long array[], int length);

@@ -40,10 +40,10 @@
      </rect>
     </property>
     <property name="text">
-     <string>Pick a file</string>
+     <string>Pick file</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="Clear">
+   <widget class="QPushButton" name="clear">
     <property name="geometry">
      <rect>
       <x>1200</x>

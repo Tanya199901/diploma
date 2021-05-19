@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     p_tiff = new myTIFF("MainWindow");
     this->setMouseTracking(true);
     this->ui->image->installEventFilter(this);
-
+    handledImage = NULL;
 }
 
 MainWindow::~MainWindow()
@@ -19,22 +19,22 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pickImageButton_clicked()
-{
-    QFileDialog dialog(this);
-    QString fileName = dialog.getOpenFileName(this, "Select an image", "", "Image (*.jpeg *.png *.jpg *.bmp *.tiff *.tif)");
-    QImage image(fileName);
-    showPreview(&image);
-    //calculateHistogram(&image);
-    sourceImage = image;
-    calculateHistogram(
-                &sourceImage,
-                0,
-                0,
-                sourceImage.width(),
-                sourceImage.height()
-    );
-}
+//void MainWindow::on_pickImageButton_clicked()
+//{
+//    QFileDialog dialog(this);
+//    QString fileName = dialog.getOpenFileName(this, "Select an image", "", "Image (*.jpeg *.png *.jpg *.bmp *.tiff *.tif)");
+//    QImage image(fileName);
+//    showPreview(&image);
+//    //calculateHistogram(&image);
+//    sourceImage = image;
+//    calculateHistogram(
+//                &sourceImage,
+//                0,
+//                0,
+//                sourceImage.width(),
+//                sourceImage.height()
+//    );
+//}
 
 void MainWindow::showPreview(QImage *image)
 {
@@ -74,13 +74,14 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
             QPoint press(ui->image->pressLocation.x(), ui->image->pressLocation.y());
             QPoint release(ui->image->releaseLocation.x(), ui->image->releaseLocation.y());
             convertCoords(&press, &release);
-            //calculateHistogram(&sourceImage, press.x(), press.y(), release.x(), release.y());
-            handledImage = QImage(sourceImage);
+            if (handledImage == NULL) {
+                handledImage = new QImage(sourceImage);
+            }
             int min = INT32_MAX;
             int max = -1;
             for (int i = press.y(); i < release.y(); i++) {
                 for (int j = press.x(); j < release.x(); j++) {
-                    QColor pixel = handledImage.pixelColor(j, i);
+                    QColor pixel = handledImage->pixelColor(j, i);
                     int value = pixel.value();
                     if (value > max) {
                         max = value;
@@ -96,15 +97,15 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
             // qDebug() << "~~~ A: " << coefA << "; B: " << coefB;
             for (int i = press.y(); i < release.y(); i++) {
                 for (int j = press.x(); j < release.x(); j++) {
-                    QColor pixel = handledImage.pixelColor(j, i);
+                    QColor pixel = handledImage->pixelColor(j, i);
                     int newValue = pixel.value() * coefA + coefB;
                     // qDebug() << "~~~ oldV" << pixel.value() << "; newV: " << newValue;
                     pixel.setHsv(pixel.hsvHue(), pixel.hsvSaturation(), newValue);
-                    handledImage.setPixelColor(j, i, pixel);
+                    handledImage->setPixelColor(j, i, pixel);
                     //int brightness = pixel.lightness();
                 }
             }
-            showPreview(&handledImage);
+            showPreview(handledImage);
         }
         else
             qDebug() << tr("Стремное событие: %1");
@@ -127,7 +128,7 @@ void MainWindow::printArray(long array[], int length)
     }
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_pickFileButton_clicked()
 {
     uint imageWidth;
     uint imageHeight;
@@ -207,8 +208,9 @@ void MainWindow::convertCoords(QPoint* press, QPoint* release)
     qDebug() << "post: press: " << *press << "; release: " << *release;
 }
 
-void MainWindow::on_Clear_clicked()
+void MainWindow::on_clear_clicked()
 {
-
+    handledImage = NULL;
+    showPreview(&sourceImage);
 }
 
