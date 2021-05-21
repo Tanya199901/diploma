@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <QColor>
+#include <QScrollBar>
 
 #include "service_functions.h"
 
@@ -30,16 +31,25 @@ private slots:
 
     void on_normalSizeButton_clicked();
 
+    void on_fitButton_clicked();
+
+    void on_zoomInButton_clicked();
+
+    void on_zoomOutButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QImage sourceImage;
     QImage * handledImage;
+    float scaleFactor;
     void showPreview(QImage *image);
     void calculateHistogram(QImage *image, int x1, int y1, int x2, int y2);
     void printArray(long array[], int length);
     void prepareArray(long array[], int length);
     bool eventFilter(QObject* obj, QEvent* event);
     void convertCoords(QPoint* press, QPoint* release);
+    void scaleImage(float factor);
+    void adjustScrollBar(QScrollBar *scrollBar, float factor);
 
 };
 #endif // MAINWINDOW_H

@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    scaleFactor = 1.0F;
 
     p_tiff = new myTIFF("MainWindow");
     this->setMouseTracking(true);
@@ -249,3 +250,35 @@ void MainWindow::on_normalSizeButton_clicked()
     ui->image->adjustSize();
 }
 
+void MainWindow::on_fitButton_clicked()
+{
+
+}
+
+
+void MainWindow::on_zoomInButton_clicked()
+{
+    scaleImage(1.25F);
+}
+
+
+void MainWindow::on_zoomOutButton_clicked()
+{
+    scaleImage(0.8F);
+
+}
+
+void MainWindow::scaleImage(float factor)
+{
+    scaleFactor *= factor;
+    ui->image->resize(scaleFactor * ui->image->size());
+
+    adjustScrollBar(ui->scrollArea->horizontalScrollBar(), factor);
+    adjustScrollBar(ui->scrollArea->verticalScrollBar(), factor);
+}
+
+void MainWindow::adjustScrollBar(QScrollBar *scrollBar, float factor)
+{
+    scrollBar->setValue(int(factor * scrollBar->value()
+                                 + ((factor - 1) * scrollBar->pageStep()/2)));
+}
