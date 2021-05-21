@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent)
     this->ui->image->installEventFilter(this);
     handledImage = NULL;
     qInfo() << "=== " << QDateTime::currentDateTime().toString(Qt::DateFormat::LocaleDate) << " ===";
+    //ui->scrollArea->setWidget(ui->image);
+    this->ui->image->adjustSize();
 }
 
 MainWindow::~MainWindow()
@@ -42,8 +44,10 @@ void MainWindow::showPreview(QImage *image)
     QSize picSize = ui->image->size();
     QPixmap originalPixmap = QPixmap::fromImage(*image);
     qDebug() << image->format();
-    QPixmap scaledPixmap = originalPixmap.scaled(picSize, Qt::KeepAspectRatio);
-    ui->image->setPixmap(scaledPixmap);
+    // QPixmap scaledPixmap = originalPixmap.scaled(picSize, Qt::KeepAspectRatio);
+    //ui->image->setPixmap(scaledPixmap);
+    ui->image->setPixmap(originalPixmap);
+    ui->image->adjustSize();
 }
 
 void MainWindow::calculateHistogram(QImage *image, int x1, int y1, int x2, int y2)
@@ -237,5 +241,11 @@ void MainWindow::on_saveButton_clicked()
         imageToSave = handledImage;
     }
     imageToSave->save(saveFileName);
+}
+
+
+void MainWindow::on_normalSizeButton_clicked()
+{
+    ui->image->adjustSize();
 }
 

@@ -28,6 +28,8 @@ private slots:
 
     void on_saveButton_clicked();
 
+    void on_normalSizeButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QImage sourceImage;
