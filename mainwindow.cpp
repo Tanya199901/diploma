@@ -12,7 +12,6 @@ MainWindow::MainWindow(QWidget *parent)
     p_tiff = new myTIFF("MainWindow");
     this->setMouseTracking(true);
     this->ui->image->installEventFilter(this);
-    handledImage = NULL;
     qInfo() << "=== " << QDateTime::currentDateTime().toString(Qt::DateFormat::LocaleDate) << " ===";
     //ui->scrollArea->setWidget(ui->image);
     this->ui->image->adjustSize();
@@ -80,9 +79,6 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
             QPoint press(ui->image->pressLocation.x(), ui->image->pressLocation.y());
             QPoint release(ui->image->releaseLocation.x(), ui->image->releaseLocation.y());
             convertCoords(&press, &release);
-            if (handledImage == NULL) {
-                handledImage = new QImage(sourceImage);
-            }
             int min = INT32_MAX;
             int max = -1;
             for (int i = press.y(); i < release.y(); i++) {
@@ -191,6 +187,7 @@ void MainWindow::on_pickFileButton_clicked()
     image.convertTo(QImage::Format_ARGB32_Premultiplied);
     qDebug() << "Image format" << image.format();
     sourceImage = image;
+    handledImage = new QImage(sourceImage);
     calculateHistogram(
                 &sourceImage,
                 0,
@@ -226,7 +223,7 @@ void MainWindow::convertCoords(QPoint* press, QPoint* release)
 
 void MainWindow::on_clear_clicked()
 {
-    handledImage = NULL;
+    handledImage = new QImage(sourceImage);
     showPreview(&sourceImage);
 }
 
@@ -235,13 +232,7 @@ void MainWindow::on_saveButton_clicked()
 {
     QString saveFileName = QFileDialog::getSaveFileName(this, "Save", "", "JPEG (*.jpeg);; TIFF(*.tif)");
     if (saveFileName.isEmpty()) return;
-    QImage * imageToSave;
-    if (handledImage == NULL) {
-        imageToSave = &sourceImage;
-    } else {
-        imageToSave = handledImage;
-    }
-    imageToSave->save(saveFileName);
+    handledImage->save(saveFileName);
 }
 
 
