@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QColorSpace>
+#include <QWheelEvent>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -10,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     p_tiff = new myTIFF("MainWindow");
     this->setMouseTracking(true);
+    this->ui->scrollArea->viewport()->installEventFilter(this);
     this->ui->image->installEventFilter(this);
     qInfo() << "=== " << QDateTime::currentDateTime().toString(Qt::DateFormat::LocaleDate) << " ===";
     //ui->scrollArea->setWidget(ui->image);
@@ -93,8 +95,18 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
             ui->image->setPixmap(QPixmap::fromImage(*handledImage).scaled(ui->image->size(), Qt::KeepAspectRatio));
             calculateHistogram(handledImage, press.x(), press.y(), release.x(), release.y());
         }
-        else
-            qDebug() << tr("Стремное событие: %1");
+    }
+    if (event->type() == QEvent::Wheel) {
+        QWheelEvent* me = static_cast<QWheelEvent*>(event);
+        if (me) {
+            qDebug() << "Wheel event: " << me;
+            if (me->angleDelta().y() > 0) {
+                on_zoomInButton_clicked();
+            } else if (me->angleDelta().y() < 0) {
+                on_zoomOutButton_clicked();
+            }
+            return true;
+        }
     }
     return QMainWindow::eventFilter(obj, event);
 }
