@@ -54,6 +54,40 @@ void MainWindow::calculateHistogram(QImage *image, int x1, int y1, int x2, int y
     printArray(hist, 256);
 }
 
+void MainWindow::contrastArea(QPoint a, QPoint b)
+{
+    int min = INT32_MAX;
+    int max = -1;
+    for (int i = a.y(); i < b.y(); i++) {
+        for (int j = a.x(); j < b.x(); j++) {
+            QColor pixel = handledImage->pixelColor(j, i);
+            int value = pixel.value();
+            if (value > max) {
+                max = value;
+            } else if (value < min) {
+                min = value;
+            }
+            //int brightness = pixel.lightness();
+        }
+    }
+    qDebug() << "~~~ min: " << min << "; max: " << max;
+    float coefA = 255.0F / (max - min);
+    float coefB = -1.0F * ((255.0F * min) / (max - min));
+    // qDebug() << "~~~ A: " << coefA << "; B: " << coefB;
+    for (int i = a.y(); i < b.y(); i++) {
+        for (int j = a.x(); j < b.x(); j++) {
+            QColor pixel = handledImage->pixelColor(j, i);
+            int newValue = pixel.value() * coefA + coefB;
+            // qDebug() << "~~~ oldV" << pixel.value() << "; newV: " << newValue;
+            pixel.setHsv(pixel.hsvHue(), pixel.hsvSaturation(), newValue);
+            handledImage->setPixelColor(j, i, pixel);
+            //int brightness = pixel.lightness();
+        }
+    }
+    //showPreview(handledImage);
+    ui->image->setPixmap(QPixmap::fromImage(*handledImage).scaled(ui->image->size(), Qt::KeepAspectRatio));
+}
+
 bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
 
     if (event->type() == QEvent::MouseButtonRelease) {
@@ -63,36 +97,7 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
             QPoint press(ui->image->pressLocation.x(), ui->image->pressLocation.y());
             QPoint release(ui->image->releaseLocation.x(), ui->image->releaseLocation.y());
             convertCoords(&press, &release);
-            int min = INT32_MAX;
-            int max = -1;
-            for (int i = press.y(); i < release.y(); i++) {
-                for (int j = press.x(); j < release.x(); j++) {
-                    QColor pixel = handledImage->pixelColor(j, i);
-                    int value = pixel.value();
-                    if (value > max) {
-                        max = value;
-                    } else if (value < min) {
-                        min = value;
-                    }
-                    //int brightness = pixel.lightness();
-                }
-            }
-            qDebug() << "~~~ min: " << min << "; max: " << max;
-            float coefA = 255.0F / (max - min);
-            float coefB = -1.0F * ((255.0F * min) / (max - min));
-            // qDebug() << "~~~ A: " << coefA << "; B: " << coefB;
-            for (int i = press.y(); i < release.y(); i++) {
-                for (int j = press.x(); j < release.x(); j++) {
-                    QColor pixel = handledImage->pixelColor(j, i);
-                    int newValue = pixel.value() * coefA + coefB;
-                    // qDebug() << "~~~ oldV" << pixel.value() << "; newV: " << newValue;
-                    pixel.setHsv(pixel.hsvHue(), pixel.hsvSaturation(), newValue);
-                    handledImage->setPixelColor(j, i, pixel);
-                    //int brightness = pixel.lightness();
-                }
-            }
-            //showPreview(handledImage);
-            ui->image->setPixmap(QPixmap::fromImage(*handledImage).scaled(ui->image->size(), Qt::KeepAspectRatio));
+            contrastArea(press, release);
             calculateHistogram(handledImage, press.x(), press.y(), release.x(), release.y());
         }
     }
@@ -134,6 +139,7 @@ void MainWindow::on_pickFileButton_clicked()
     QByteArray ba;
     QString fp = QFileDialog::getOpenFileName(this, "Select an image", "", "Image (*.tiff *.tif)");
     if (fp.isEmpty()) return;
+    ui->image->clearSelection();
     qInfo() << "Selected image: " << fp;
     const char *c_str;
 
@@ -218,6 +224,7 @@ void MainWindow::convertCoords(QPoint* press, QPoint* release)
 
 void MainWindow::on_clear_clicked()
 {
+    ui->image->clearSelection();
     handledImage = new QImage(sourceImage);
     showPreview(&sourceImage);
 }
@@ -280,3 +287,9 @@ void MainWindow::adjustScrollBar(QScrollBar *scrollBar, float factor)
     scrollBar->setValue(int(factor * scrollBar->value()
                                  + ((factor - 1) * scrollBar->pageStep()/2)));
 }
+
+void MainWindow::on_contrastButton_clicked()
+{
+    contrastArea(QPoint(), QPoint(handledImage->size().width(), handledImage->size().height()));
+}
+

@@ -87,6 +87,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="contrastButton">
+        <property name="text">
+         <string>Contrast</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="clear">
         <property name="text">
          <string>Clear</string>

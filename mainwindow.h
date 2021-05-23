@@ -37,6 +37,8 @@ private slots:
 
     void on_zoomOutButton_clicked();
 
+    void on_contrastButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QImage sourceImage;
@@ -49,6 +51,6 @@ private:
     void convertCoords(QPoint* press, QPoint* release);
     void scaleImage(float factor);
     void adjustScrollBar(QScrollBar *scrollBar, float factor);
-
+    void contrastArea(QPoint a, QPoint b);
 };
 #endif // MAINWINDOW_H
