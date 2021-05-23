@@ -274,6 +274,7 @@ void MainWindow::scaleImage(float factor)
 {
     scaleFactor *= factor;
     ui->image->resize(scaleFactor * ui->image->size());
+    ui->image->setPixmap(QPixmap::fromImage(*getCurrentImage()).scaled(ui->image->size(), Qt::KeepAspectRatio));
 
     adjustScrollBar(ui->scrollArea->horizontalScrollBar(), factor);
     adjustScrollBar(ui->scrollArea->verticalScrollBar(), factor);
