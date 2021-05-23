@@ -247,6 +247,7 @@ void MainWindow::on_saveButton_clicked()
 
 void MainWindow::on_normalSizeButton_clicked()
 {
+    ui->image->setPixmap(QPixmap::fromImage(*getCurrentImage()));
     ui->image->adjustSize();
 }
 
