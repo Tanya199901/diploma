@@ -252,7 +252,14 @@ void MainWindow::on_normalSizeButton_clicked()
 
 void MainWindow::on_fitButton_clicked()
 {
-
+    ui->image->resize(ui->scrollArea->size());
+    QImage image;
+    if (handledImage == NULL) {
+        image = sourceImage;
+    } else {
+        image = *handledImage;
+    }
+    ui->image->setPixmap(QPixmap::fromImage(image).scaled(ui->scrollArea->size(), Qt::KeepAspectRatio));
 }
 
 
