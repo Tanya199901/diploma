@@ -33,3 +33,12 @@ void ClickableLabel::paintEvent(QPaintEvent *event)
     painter.drawRect(pressLocation.x(), pressLocation.y(), releaseLocation.x() - pressLocation.x(), releaseLocation.y() - pressLocation.y());
     painter.end();
 }
+
+void ClickableLabel::clearSelection()
+{
+    pressLocation.setX(0);
+    pressLocation.setY(0);
+    releaseLocation.setX(0);
+    releaseLocation.setY(0);
+    this->repaint();
+}

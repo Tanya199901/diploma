@@ -221,12 +221,14 @@ void MainWindow::on_saveButton_clicked()
 
 void MainWindow::on_normalSizeButton_clicked()
 {
+    ui->image->clearSelection();
     ui->image->setPixmap(QPixmap::fromImage(*handledImage));
     ui->image->adjustSize();
 }
 
 void MainWindow::on_fitButton_clicked()
 {
+    ui->image->clearSelection();
     ui->image->resize(ui->scrollArea->size());
     ui->image->setPixmap(QPixmap::fromImage(*handledImage).scaled(ui->scrollArea->size(), Qt::KeepAspectRatio));
 }
@@ -234,12 +236,14 @@ void MainWindow::on_fitButton_clicked()
 
 void MainWindow::on_zoomInButton_clicked()
 {
+    ui->image->clearSelection();
     scaleImage(1.25F);
 }
 
 
 void MainWindow::on_zoomOutButton_clicked()
 {
+    ui->image->clearSelection();
     scaleImage(0.8F);
 }
 

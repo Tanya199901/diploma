@@ -21,6 +21,7 @@ signals:
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);
+    void clearSelection();
     QPointF pressLocation;
     QPointF releaseLocation;
 };
