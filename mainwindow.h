@@ -50,6 +50,7 @@ private:
     void convertCoords(QPoint* press, QPoint* release);
     void scaleImage(float factor);
     void adjustScrollBar(QScrollBar *scrollBar, float factor);
+    QImage * getCurrentImage();
 
 };
 #endif // MAINWINDOW_H
