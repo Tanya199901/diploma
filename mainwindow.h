@@ -41,7 +41,6 @@ private:
     Ui::MainWindow *ui;
     QImage sourceImage;
     QImage * handledImage;
-    float scaleFactor;
     void showPreview(QImage *image);
     void calculateHistogram(QImage *image, int x1, int y1, int x2, int y2);
     void printArray(long array[], int length);

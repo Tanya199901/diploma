@@ -7,7 +7,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    scaleFactor = 1.0F;
 
     p_tiff = new myTIFF("MainWindow");
     this->setMouseTracking(true);
@@ -21,23 +20,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-//void MainWindow::on_pickImageButton_clicked()
-//{
-//    QFileDialog dialog(this);
-//    QString fileName = dialog.getOpenFileName(this, "Select an image", "", "Image (*.jpeg *.png *.jpg *.bmp *.tiff *.tif)");
-//    QImage image(fileName);
-//    showPreview(&image);
-//    //calculateHistogram(&image);
-//    sourceImage = image;
-//    calculateHistogram(
-//                &sourceImage,
-//                0,
-//                0,
-//                sourceImage.width(),
-//                sourceImage.height()
-//    );
-//}
 
 void MainWindow::showPreview(QImage *image)
 {
@@ -107,7 +89,8 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
                     //int brightness = pixel.lightness();
                 }
             }
-            showPreview(handledImage);
+            //showPreview(handledImage);
+            ui->image->setPixmap(QPixmap::fromImage(*handledImage).scaled(ui->image->size(), Qt::KeepAspectRatio));
             calculateHistogram(handledImage, press.x(), press.y(), release.x(), release.y());
         }
         else
@@ -206,11 +189,11 @@ void MainWindow::convertCoords(QPoint* press, QPoint* release)
     if (sourceImage.width() < sourceImage.height()) {
         // height
         qDebug() << "by height";
-        factor = ((float) sourceImage.height()) / ui->image->height();
+        factor = ((float) sourceImage.height()) / ui->image->pixmap()->height();
     } else {
         // width
         qDebug() << "by width";
-        factor = ((float) sourceImage.width()) / ui->image->width();
+        factor = ((float) sourceImage.width()) / ui->image->pixmap()->width();
     }
     qDebug() << "factor: " << factor;
     qDebug() << "pre: press: " << *press << "; release: " << *release;
@@ -238,7 +221,6 @@ void MainWindow::on_saveButton_clicked()
 
 void MainWindow::on_normalSizeButton_clicked()
 {
-    scaleFactor = 1.0F;
     ui->image->setPixmap(QPixmap::fromImage(*handledImage));
     ui->image->adjustSize();
 }
@@ -247,7 +229,6 @@ void MainWindow::on_fitButton_clicked()
 {
     ui->image->resize(ui->scrollArea->size());
     ui->image->setPixmap(QPixmap::fromImage(*handledImage).scaled(ui->scrollArea->size(), Qt::KeepAspectRatio));
-    scaleFactor = 1.0F;
 }
 
 
@@ -264,9 +245,14 @@ void MainWindow::on_zoomOutButton_clicked()
 
 void MainWindow::scaleImage(float factor)
 {
-    scaleFactor *= factor;
-    qDebug() << tr("Scale factor: %1; factor: %2").arg(scaleFactor).arg(factor);
-    ui->image->resize(scaleFactor * ui->image->size());
+    qDebug() << tr("Scale factor: %1").arg(factor);
+    qDebug() << "Size: pre : " << ui->image->size();
+    ui->image->resize(factor * ui->image->size());
+    qDebug() << "Size: post: " << ui->image->size();
+    if (ui->image->size().width() < ui->scrollArea->size().width()
+            || ui->image->size().height() < ui->scrollArea->size().height()) {
+        ui->image->resize(ui->scrollArea->size());
+    }
     ui->image->setPixmap(QPixmap::fromImage(*handledImage).scaled(ui->image->size(), Qt::KeepAspectRatio));
 
     adjustScrollBar(ui->scrollArea->horizontalScrollBar(), factor);
