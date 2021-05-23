@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     qInfo() << "=== " << QDateTime::currentDateTime().toString(Qt::DateFormat::LocaleDate) << " ===";
     //ui->scrollArea->setWidget(ui->image);
     this->ui->image->adjustSize();
+    updateActions();
 }
 
 MainWindow::~MainWindow()
@@ -197,6 +198,7 @@ void MainWindow::on_pickFileButton_clicked()
                 sourceImage.height()
                 );
 
+    updateActions();
     delete [] imageData;
 }
 
@@ -293,3 +295,14 @@ void MainWindow::on_contrastButton_clicked()
     contrastArea(QPoint(), QPoint(handledImage->size().width(), handledImage->size().height()));
 }
 
+void MainWindow::updateActions()
+{
+    bool isEnabled = !sourceImage.isNull();
+    ui->contrastButton->setEnabled(isEnabled);
+    ui->clear->setEnabled(isEnabled);
+    ui->saveButton->setEnabled(isEnabled);
+    ui->fitButton->setEnabled(isEnabled);
+    ui->zoomInButton->setEnabled(isEnabled);
+    ui->zoomOutButton->setEnabled(isEnabled);
+    ui->normalSizeButton->setEnabled(isEnabled);
+}

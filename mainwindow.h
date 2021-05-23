@@ -52,5 +52,6 @@ private:
     void scaleImage(float factor);
     void adjustScrollBar(QScrollBar *scrollBar, float factor);
     void contrastArea(QPoint a, QPoint b);
+    void updateActions();
 };
 #endif // MAINWINDOW_H
