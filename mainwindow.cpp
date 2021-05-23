@@ -239,14 +239,14 @@ void MainWindow::on_saveButton_clicked()
 void MainWindow::on_normalSizeButton_clicked()
 {
     scaleFactor = 1.0F;
-    ui->image->setPixmap(QPixmap::fromImage(*getCurrentImage()));
+    ui->image->setPixmap(QPixmap::fromImage(*handledImage));
     ui->image->adjustSize();
 }
 
 void MainWindow::on_fitButton_clicked()
 {
     ui->image->resize(ui->scrollArea->size());
-    ui->image->setPixmap(QPixmap::fromImage(*getCurrentImage()).scaled(ui->scrollArea->size(), Qt::KeepAspectRatio));
+    ui->image->setPixmap(QPixmap::fromImage(*handledImage).scaled(ui->scrollArea->size(), Qt::KeepAspectRatio));
     scaleFactor = 1.0F;
 }
 
@@ -267,7 +267,7 @@ void MainWindow::scaleImage(float factor)
     scaleFactor *= factor;
     qDebug() << tr("Scale factor: %1; factor: %2").arg(scaleFactor).arg(factor);
     ui->image->resize(scaleFactor * ui->image->size());
-    ui->image->setPixmap(QPixmap::fromImage(*getCurrentImage()).scaled(ui->image->size(), Qt::KeepAspectRatio));
+    ui->image->setPixmap(QPixmap::fromImage(*handledImage).scaled(ui->image->size(), Qt::KeepAspectRatio));
 
     adjustScrollBar(ui->scrollArea->horizontalScrollBar(), factor);
     adjustScrollBar(ui->scrollArea->verticalScrollBar(), factor);
@@ -277,14 +277,4 @@ void MainWindow::adjustScrollBar(QScrollBar *scrollBar, float factor)
 {
     scrollBar->setValue(int(factor * scrollBar->value()
                                  + ((factor - 1) * scrollBar->pageStep()/2)));
-}
-
-QImage * MainWindow::getCurrentImage() {
-    QImage * image;
-    if (handledImage == NULL) {
-        image = &sourceImage;
-    } else {
-        image = handledImage;
-    }
-    return image;
 }
