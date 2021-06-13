@@ -53,5 +53,6 @@ private:
     void adjustScrollBar(QScrollBar *scrollBar, float factor);
     void contrastArea(QPoint a, QPoint b);
     void updateActions();
+    void drawHistogram(long hist[], int length);
 };
 #endif // MAINWINDOW_H

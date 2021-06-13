@@ -53,6 +53,7 @@ void MainWindow::calculateHistogram(QImage *image, int x1, int y1, int x2, int y
     }
 
     printArray(hist, 256);
+    drawHistogram(hist, 256);
 }
 
 void MainWindow::contrastArea(QPoint a, QPoint b)
@@ -181,11 +182,7 @@ void MainWindow::on_pickFileButton_clicked()
         }
     }
     qDebug() << "MainWindow::8";
-//    QPixmap pixmap;
-//    pixmap.convertFromImage(image);
-//    ui->image->setPixmap(pixmap);
     showPreview(&image);
-//    image.convertToColorSpace(QColorSpace::SRgb);
     image.convertTo(QImage::Format_ARGB32_Premultiplied);
     qDebug() << "Image format" << image.format();
     sourceImage = image;
@@ -305,4 +302,32 @@ void MainWindow::updateActions()
     ui->zoomInButton->setEnabled(isEnabled);
     ui->zoomOutButton->setEnabled(isEnabled);
     ui->normalSizeButton->setEnabled(isEnabled);
+}
+
+void MainWindow::drawHistogram(long hist[], int length)
+{
+    float max = -1;
+    for (int i = 0; i < length; i++) {
+        if (hist[i] > max)
+        {
+            max = hist[i];
+        }
+    }
+    float widthFactor = ((float) length) / ui->chartLabel->width();
+    float heightFactor = max / ui->chartLabel->height();
+    QImage chart(ui->chartLabel->size(), QImage::Format_Mono);
+    for (int y = 0; y < chart.height(); y++) {
+        for (int x = 0; x < chart.width(); x++) {
+            int index = x * widthFactor;
+
+            uint pixelValue;
+            if (hist[index] / heightFactor >= ui->chartLabel->height() - y) {
+                pixelValue = 0;
+            } else {
+                pixelValue = 1;
+            }
+            chart.setPixel(x, y, pixelValue);
+        }
+    }
+    ui->chartLabel->setPixmap(QPixmap::fromImage(chart));
 }
